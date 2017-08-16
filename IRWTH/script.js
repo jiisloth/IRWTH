@@ -13,7 +13,7 @@ document.addEventListener('click', enableNoSleep, false);
 var hpstring = "#HP";
 var expstring = "EXP!";
 
-var version = "a.0.1.3.1";
+var version = "a.0.1.4";
 
 var startPos;
 var lastPos;
@@ -64,6 +64,26 @@ var snail = {
         "(''______>"
     ]
 
+};
+
+var snake = {
+    name: "snek",
+    lvl: [3, 7],
+    base: {
+        speed: 3,
+        attack: 3,
+        hp: 4
+    },
+    multiplier: {
+        speed: 0.1,
+        attack: 0.6,
+        hp: 0.3
+    },
+    img: [
+        "    ___   ",
+        ":-<'_  )_ ",
+        "    (____>"
+    ]
 };
 
 var mole = {
@@ -117,7 +137,7 @@ var bear = {
     multiplier: {
         speed: 1,
         attack: 5,
-        hp: 3
+        hp: 2
     },
     img: [
         "(n),,,(n) ",
@@ -133,6 +153,7 @@ var enemies = [snail, mole, bird, bear];
 
 $(document).ready(function () {
     setSize();
+    $("#uhp").text(updatebar(you.hp, you.maxhp, hpstring));
     setSplash();
     $("#container").show();
     output = $("#output");
@@ -148,7 +169,11 @@ $(document).ready(function () {
         outputmsg("This is your home now!");
         outputmsg("Return here if you get wounded!");
         outputmsg("Go get your adventure started!");
+        $("#infolink").hide();
         $("#allownavi").hide();
+    });
+    $("#infolink").click(function () {
+        window.location.href="info/log.html"
     });
     $("#attack").click(function () {
         $("#attack").hide();
@@ -185,7 +210,6 @@ $(document).ready(function () {
 
 
 function setSize() {
-    $("#uhp").text(updatebar(you.hp, you.maxhp, hpstring))
     var size = 13;
     while ($("#size").width() <= $(window).width()){
         size += 1;
@@ -210,7 +234,8 @@ function setSplash() {
         "\"Better than Pokémon GO!\"",
         "Hello World!",
         "Pity the snail!",
-        "Colorful!"
+        "Colorful!",
+        version
     ];
     $("#splashtext").text(splashtexts[Math.floor(Math.random()*splashtexts.length)]);
 }
