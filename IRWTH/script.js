@@ -242,6 +242,13 @@ function setSplash() {
         "Tested by you!",
         "#illratherwalktohell",
         "Sample text",
+        "Watch out for the sidewalk!",
+        "When u drink, You walk",
+        "No thing",
+        "Try sleepping on the floor!",
+        "sandels.jpg",
+        "Plait my hair!",
+        "2real4me_irl",
         version
     ];
     $("#splashtext").text(splashtexts[Math.floor(Math.random()*splashtexts.length)]);
