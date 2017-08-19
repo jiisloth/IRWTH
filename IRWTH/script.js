@@ -13,7 +13,7 @@ document.addEventListener('click', enableNoSleep, false);
 var hpstring = "#HP";
 var expstring = "EXP!";
 
-var version = "a.0.1.4";
+var version = "a.0.1.5";
 
 var startPos;
 var lastPos;
@@ -235,6 +235,13 @@ function setSplash() {
         "Hello World!",
         "Pity the snail!",
         "Colorful!",
+        "Hello IRC!",
+        "Tested by Sebu_",
+        "Tested by Gertrud",
+        "Tested by Glukoosi. Do u even try?",
+        "Tested by you!",
+        "#illratherwalktohell",
+        "Sample text",
         version
     ];
     $("#splashtext").text(splashtexts[Math.floor(Math.random()*splashtexts.length)]);
@@ -377,7 +384,11 @@ function youDied() {
 
 
 function updatebar(hp, maxhp, fill) {
-    return fill.repeat(40).slice(0, Math.floor(40 * (hp/maxhp)));
+    var bar = fill.repeat(40).slice(0, 1+ Math.floor(39 * (hp/maxhp)));
+    if (hp == 0) {
+        bar = ""
+    }
+    return bar
 }
 
 
@@ -404,11 +415,16 @@ function outputmsg(msg) {
 
 function getLocation() {
     if (navigator.geolocation) {
-        navigator.geolocation.watchPosition(getPositions);
+        navigator.geolocation.watchPosition(getPositions, posError, {enableHighAccuracy: true});
     } else {
         alert("Geolocation is not supported by this browser.");
     }
 }
+
+function posError() {
+    outputmsg("ERROR. Could not find you!")
+}
+
 
 function getPositions(position) {
     if (typeof startPos == 'undefined') {
