@@ -13,7 +13,7 @@ document.addEventListener('click', enableNoSleep, false);
 var hpstring = "#HP";
 var expstring = "EXP!";
 
-var version = "a.0.1.6";
+var version = "a.0.1.6.1";
 
 var startPos;
 var lastPos;
