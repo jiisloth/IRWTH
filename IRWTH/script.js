@@ -259,6 +259,7 @@ function setSplash() {
         "Hello IRC!",
         "Tested by Sebu_",
         "Tested by Gertrud",
+        "Tested by Mega_Tron",
         "Tested by Glukoosi. Do u even try?",
         "Tested by you!",
         "#illratherwalktohell",
