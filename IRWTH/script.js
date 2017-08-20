@@ -13,7 +13,7 @@ document.addEventListener('click', enableNoSleep, false);
 var hpstring = "#HP";
 var expstring = "EXP!";
 
-var version = "a.0.1.5";
+var version = "a.0.1.6";
 
 var startPos;
 var lastPos;
@@ -27,6 +27,7 @@ var encounterProb = 2;
 var encounterTimer = 1000;
 var safeZone = 0.100;
 
+var timerResetCoolDown;
 var attackCoolDown;
 var autoBoostTimer;
 var enemyAttackLoop;
@@ -110,7 +111,7 @@ var bird = {
     name: "bird",
     lvl: [1, 6],
     base: {
-        speed: 2,
+        speed: 1.6,
         attack: 1,
         hp: 2
     },
@@ -153,6 +154,7 @@ var enemies = [snail, mole, bird, bear];
 
 $(document).ready(function () {
     setSize();
+    makeButtons();
     $("#uhp").text(updatebar(you.hp, you.maxhp, hpstring));
     setSplash();
     $("#container").show();
@@ -169,45 +171,49 @@ $(document).ready(function () {
         outputmsg("This is your home now!");
         outputmsg("Return here if you get wounded!");
         outputmsg("Go get your adventure started!");
-        $("#infolink").hide();
-        $("#allownavi").hide();
+        $("#StartMenu").hide();
     });
     $("#infolink").click(function () {
         window.location.href="info/log.html"
     });
     $("#attack").click(function () {
         $("#attack").hide();
+        timerResetCoolDown = setTimeout(setResetTimer, 500);
         youAttack();
+    });
+    $("#resetTimer").click(function () {
+        clearTimeout(attackCoolDown);
+        $("#resetTimer").hide();
+        timerResetCoolDown = setTimeout(setResetTimer, 500);
+        attackCoolDown = setTimeout(attackTimeout, Math.floor(10000 / you.speed));
+
     });
     $("#boostAttack").click(function () {
         clearTimeout(autoBoostTimer);
-        $("#boostAttack").hide();
-        $("#boostSpeed").hide();
-        $("#boostHP").hide();
+        $("#StatboostMenu").hide();
         outputmsg("You boosted attack!");
         you.attack += 1;
         checkLVLup();
     });
     $("#boostSpeed").click(function () {
         clearTimeout(autoBoostTimer);
-        $("#boostAttack").hide();
-        $("#boostSpeed").hide();
-        $("#boostHP").hide();
+        $("#StatboostMenu").hide();
         outputmsg("You boosted speed!");
         you.speed += 1;
         checkLVLup();
     });
     $("#boostHP").click(function () {
         clearTimeout(autoBoostTimer);
-        $("#boostAttack").hide();
-        $("#boostSpeed").hide();
-        $("#boostHP").hide();
+        $("#StatboostMenu").hide();
         outputmsg("You boosted max HP!");
         you.maxhp += 1;
         checkLVLup();
     });
 });
 
+function setResetTimer() {
+    $("#resetTimer").show()
+}
 
 function setSize() {
     var size = 13;
@@ -217,16 +223,31 @@ function setSize() {
     }
     size -= 3;
     $("#size").css('font-size', size + "px");
-    while ($("#size").height() * 24 > $(window).height()){
+    while ($("#size").height() * 29.5 > $(window).height()){
         size -= 1;
         $("#size").css('font-size', size + "px");
     }
     $("#container").width( $("#size").width() );
     $("#output").height($("#size").height() * 3);
-    $("#input").height($("#size").height() * 3);
+    $("#input").height($("#size").height() * 9);
     $(".oneline").height($("#size").height());
     $("body").css('font-size', size + "px");
 }
+
+
+function makeButtons() {
+    $('.button').each(function(i, obj) {
+        var buttonsize = 19;
+        var buttontext = $(obj).text();
+        var buttonfill = ((buttonsize-2)/2 - buttontext.length/2).toFixed(2);
+        $(obj).html(
+            "." + "-".repeat((buttonsize-2)) + ".<br>" +
+            "|" + " ".repeat(Math.floor(buttonfill)) + "<div class='buttontext'>" + buttontext + "</div>" + " ".repeat(Math.ceil(buttonfill)) + "|<br>" +
+            "'" + "-".repeat((buttonsize-2)) + "'"
+        );
+    });
+}
+
 
 function setSplash() {
     var splashtexts = [
@@ -247,8 +268,10 @@ function setSplash() {
         "No thing",
         "Try sleepping on the floor!",
         "sandels.jpg",
+        "You encountered way too expensive ring!",
         "Plait my hair!",
         "2real4me_irl",
+        "High accuracy enabled!",
         version
     ];
     $("#splashtext").text(splashtexts[Math.floor(Math.random()*splashtexts.length)]);
@@ -301,7 +324,9 @@ function startbattle() {
     $("#ename").text(enemy.name);
     $("#elvl").text("LVL. " + Math.floor(enemy.lvl));
     $("#ehp").text(updatebar(enemy.hp, enemy.maxhp, hpstring));
+    $("#resetTimer").hide();
     $("#attack").show();
+    $("#BattleMenu").show();
     enemyAttackLoop = setInterval(enemyAttack, Math.floor(10000 / enemy.speed))
 }
 
@@ -319,6 +344,8 @@ function youAttack() {
 }
 
 function attackTimeout() {
+    clearTimeout(timerResetCoolDown);
+    $("#resetTimer").hide();
     $("#attack").show()
 }
 
@@ -328,6 +355,7 @@ function enemyDied() {
     $("#eimg1").text("");
     $("#eimg2").text("");
     $("#eimg3").text("");
+    $("#BattleMenu").hide();
 
     outputmsg(enemy.mood + " " + enemy.name + " went home!");
     clearInterval(enemyAttackLoop);
@@ -356,9 +384,7 @@ function checkLVLup() {
 }
 
 function autoBoost() {
-    $("#boostAttack").hide();
-    $("#boostSpeed").hide();
-    $("#boostHP").hide();
+    $("#StatboostMenu").hide();
     outputmsg("You boosted max HP!");
     you.maxhp += 1;
     checkLVLup();
@@ -367,9 +393,7 @@ function autoBoost() {
 function setBonusSkill() {
     outputmsg("Choose attribute to extra boost!");
     autoBoostTimer = setTimeout(autoBoost, 10000);
-    $("#boostAttack").show();
-    $("#boostHP").show();
-    $("#boostSpeed").show();
+    $("#StatboostMenu").show();
 }
 
 function enemyAttack() {
@@ -384,7 +408,7 @@ function enemyAttack() {
 
 function youDied() {
     clearTimeout(attackCoolDown);
-    $("#attack").hide();
+    $("#BattleMenu").hide();
     outputmsg("You were killed by " + enemy.mood + " " + enemy.name + "!");
     clearInterval(enemyAttackLoop);
 }
@@ -460,8 +484,8 @@ function getPositions(position) {
         }
         totalDistance += lastDistance;
         lastPos = position;
-        $("#dhome").text("Home <->: " + homeDistance.toFixed(2));
-        $("#dtotal").text("Total <->: " + totalDistance.toFixed(2));
+        $("#dhome").text("Home <->: " + homeDistance.toFixed(3));
+        $("#dtotal").text("Total <->: " + totalDistance.toFixed(3));
     }
     curPos = position;
 }

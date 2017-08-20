@@ -71,7 +71,16 @@ body {
 
 .button {
     cursor: pointer;
+    white-space: pre;
+}
+
+.buttontext{
+    display: inline-block;
     text-decoration: underline;
+}
+
+.button:hover .buttontext{
+    opacity: 0.5;
 }
 
 .info {
