@@ -56,6 +56,9 @@ body {
     height: 45px
 }
 
+.line{
+    opacity: 0.5;
+}
 
 .img {
     white-space: pre;
